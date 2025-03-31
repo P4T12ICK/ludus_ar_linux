@@ -1,0 +1,5 @@
+---
+
+ludus_ar_linux_splunk_uf_url: https://download.splunk.com/products/universalforwarder/releases/9.3.0/linux/splunkforwarder-9.3.0-51ccf43db5bd-linux-2.6-amd64.deb
+ludus_ar_linux_splunk_password: changeme123!
+ludus_ar_linux_splunk_ip: "10.2.20.1"

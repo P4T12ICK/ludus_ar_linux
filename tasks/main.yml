@@ -1,0 +1,11 @@
+---
+
+- include_tasks: install_universal_forwarder.yml
+- include_tasks: install_osquery_linux.yml
+- include_tasks: install_sysmon_linux.yml
+- include_tasks: install_auditd.yml
+- include_tasks: install_art.yml
+
+- name: Restart splunk uf
+  become: true
+  command: "systemctl restart SplunkForwarder"
