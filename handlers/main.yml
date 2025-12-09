@@ -1,3 +1,5 @@
-- name: restart splunk
-  service: name=splunk state=restarted
-  become: yes
+- name: Start splunk uf
+  become: true
+  systemd:
+    name: SplunkForwarder
+    state: restarted

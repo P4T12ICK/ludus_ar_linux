@@ -1,40 +1,21 @@
 ---
-# This workflow requires a GALAXY_API_KEY secret present in the GitHub
-# repository or organization.
-#
-# See: https://github.com/marketplace/actions/publish-ansible-role-to-galaxy
-# See: https://github.com/ansible/galaxy/issues/46
+name: release
 
-name: Release
-'on':
-  push:
-    tags:
-      - '*'
-
-defaults:
-  run:
-    working-directory: 'ludus_ansible_role'
+on:
+  release:
+    types:
+      - published
+    secrets:
+      GALAXY_API_KEY:
+        required: true
 
 jobs:
-
-  release:
-    name: Release
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the codebase.
-        uses: actions/checkout@v4
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: galaxy
+        uses: averagebit/action-galaxy@1.0.0
         with:
-          path: 'ludus_ansible_role'
-
-      - name: Set up Python 3.
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install Ansible.
-        run: pip3 install ansible-core
-
-      - name: Trigger a new import on Galaxy.
-        run: >-
-          ansible-galaxy role import --api-key ${{ secrets.GALAXY_API_KEY }}
-          $(echo ${{ github.repository }} | cut -d/ -f1) $(echo ${{ github.repository }} | cut -d/ -f2)
+          galaxy_token: ${{ secrets.GALAXY_API_KEY }}
