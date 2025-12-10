@@ -49,6 +49,8 @@
   become: yes
 
 - name: Create folder directory for inputs configuration
+  become: true
+  become_user: splunkfwd
   file:
     path: "{{ item }}"
     state: directory
@@ -57,6 +59,8 @@
     - /opt/splunkforwarder/etc/apps/auditd_app/local/
 
 - name: copy inputs.conf to capture auditd logs
+  become: true
+  become_user: splunkfwd
   copy:
     src: auditd_inputs.conf
     dest: /opt/splunkforwarder/etc/apps/auditd_app/local/inputs.conf

@@ -50,6 +50,7 @@
 
 - name: Create folder directory for inputs configuration
   become: true
+  become_user: splunkfwd
   file:
     path: "{{ item }}"
     state: directory
@@ -59,6 +60,7 @@
 
 - name: copy inputs.conf to capture sysmon for linux logs
   become: true
+  become_user: splunkfwd
   copy:
     src: sysmon_inputs.conf
     dest: /opt/splunkforwarder/etc/apps/sysmon_app/local/inputs.conf
