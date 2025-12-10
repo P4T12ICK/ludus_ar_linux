@@ -74,6 +74,7 @@
   command: chmod a+rwx /var/log/osquery -R
 
 - name: Create folder directory for inputs configuration
+  become: true
   file:
     path: "{{ item }}"
     state: directory
@@ -82,6 +83,7 @@
     - /opt/splunkforwarder/etc/apps/osquery_app/local/
 
 - name: copy inputs.conf to capture osquery logs
+  become: true
   copy:
     src: osquery_inputs.conf
     dest: /opt/splunkforwarder/etc/apps/osquery_app/local/inputs.conf

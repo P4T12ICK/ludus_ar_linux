@@ -49,6 +49,7 @@
     update_cache: yes
 
 - name: Create folder directory for inputs configuration
+  become: true
   file:
     path: "{{ item }}"
     state: directory
@@ -57,6 +58,7 @@
     - /opt/splunkforwarder/etc/apps/sysmon_app/local/
 
 - name: copy inputs.conf to capture sysmon for linux logs
+  become: true
   copy:
     src: sysmon_inputs.conf
     dest: /opt/splunkforwarder/etc/apps/sysmon_app/local/inputs.conf

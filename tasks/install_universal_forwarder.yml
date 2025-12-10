@@ -1,10 +1,11 @@
 ---
 
 - name: Install splunk uf
-  become: yes
+  become: true
   apt: deb="{{ ludus_ar_linux_splunk_uf_url }}"
 
 - name: copy outputs.conf to forward data to splunk server
+  become: true
   template:
     src: outputs.conf.j2
     dest: /opt/splunkforwarder/etc/system/local/outputs.conf
@@ -14,21 +15,13 @@
   become: true
   command: /opt/splunkforwarder/bin/splunk start --accept-license --answer-yes --no-prompt --seed-passwd {{ ludus_ar_linux_splunk_password }}
 
-- name: Stop splunk uf with timeout
+- name: Wait for splunk uf to start
   become: true
-  shell: |
-    timeout 180 /opt/splunkforwarder/bin/splunk stop
-  register: splunk_stop_result
-  failed_when: false
-  ignore_errors: yes
+  command: sleep 180
 
-- name: Kill splunkd if still running after timeout
+- name: Stop splunk uf
   become: true
-  shell: |
-    if pgrep -f splunkd > /dev/null; then
-      pkill -9 -f splunkd
-    fi
-  when: splunk_stop_result.rc == 124
+  command: "/opt/splunkforwarder/bin/splunk stop"
 
 - name: setup to start at boot
   become: true
