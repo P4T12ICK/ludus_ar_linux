@@ -16,8 +16,8 @@
   command: /opt/splunkforwarder/bin/splunk start --accept-license --answer-yes --no-prompt --seed-passwd {{ ludus_ar_linux_splunk_password }}
 
 - name: Wait for splunk uf to start
-  become: true
-  command: sleep 180
+  pause:
+    seconds: 180
 
 - name: Stop splunk uf
   become: true
