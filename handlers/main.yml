@@ -1,5 +1,0 @@
-- name: Start splunk uf
-  become: true
-  systemd:
-    name: SplunkForwarder
-    state: restarted

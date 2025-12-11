@@ -6,8 +6,3 @@
 - include_tasks: install_auditd.yml
 - include_tasks: install_art.yml
 
-- name: Start splunk uf
-  become: true
-  systemd:
-    name: SplunkForwarder
-    state: restarted
