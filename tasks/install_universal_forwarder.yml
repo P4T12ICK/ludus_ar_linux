@@ -1,19 +1,5 @@
 ---
 
-- name: Create splunkfwd group
-  become: true
-  group:
-    name: splunkfwd
-    state: present
-
-- name: Create splunkfwd user
-  become: true
-  user:
-    name: splunkfwd
-    group: splunkfwd
-    create_home: yes
-    state: present
-
 - name: Install splunk uf
   become: true
   apt: deb="{{ ludus_ar_linux_splunk_uf_url }}"
@@ -23,19 +9,13 @@
   template:
     src: outputs.conf.j2
     dest: /opt/splunkforwarder/etc/system/local/outputs.conf
-    owner: splunkfwd
-    group: splunkfwd
-    mode: '0644'
-    force: yes
 
 - name: splunk license acceptance
   become: true
-  become_user: splunkfwd
   command: /opt/splunkforwarder/bin/splunk start --accept-license --answer-yes --no-prompt --seed-passwd {{ ludus_ar_linux_splunk_password }}
 
 - name: Stop splunk uf
   become: true
-  become_user: splunkfwd
   command: "/opt/splunkforwarder/bin/splunk stop"
 
 - name: setup to start at boot

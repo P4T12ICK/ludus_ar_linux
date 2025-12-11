@@ -75,7 +75,6 @@
 
 - name: Create folder directory for inputs configuration
   become: true
-  become_user: splunkfwd
   file:
     path: "{{ item }}"
     state: directory
@@ -85,7 +84,6 @@
 
 - name: copy inputs.conf to capture osquery logs
   become: true
-  become_user: splunkfwd
   copy:
     src: osquery_inputs.conf
     dest: /opt/splunkforwarder/etc/apps/osquery_app/local/inputs.conf
