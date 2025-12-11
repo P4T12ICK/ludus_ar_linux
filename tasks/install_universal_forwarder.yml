@@ -20,10 +20,12 @@
 
 - name: copy outputs.conf to forward data to splunk server
   become: true
-  become_user: splunkfwd
   template:
     src: outputs.conf.j2
     dest: /opt/splunkforwarder/etc/system/local/outputs.conf
+    owner: splunkfwd
+    group: splunkfwd
+    mode: '0644'
     force: yes
 
 - name: splunk license acceptance
