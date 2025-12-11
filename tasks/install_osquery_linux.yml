@@ -78,6 +78,9 @@
   file:
     path: "{{ item }}"
     state: directory
+    owner: splunkfwd
+    group: splunkfwd
+    mode: '0755'
     recurse: yes
   with_items:
     - /opt/splunkforwarder/etc/apps/osquery_app/local/
@@ -87,4 +90,7 @@
   copy:
     src: osquery_inputs.conf
     dest: /opt/splunkforwarder/etc/apps/osquery_app/local/inputs.conf
+    owner: splunkfwd
+    group: splunkfwd
+    mode: '0644'
     force: yes
