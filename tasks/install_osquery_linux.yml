@@ -6,6 +6,7 @@
     name:
       - software-properties-common
       - curl
+      - gnupg
     state: present    
     update_cache: true
 
