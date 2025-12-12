@@ -3,7 +3,9 @@
 - name: Install required system packages
   become: true
   apt:
-    name: software-properties-common
+    name:
+      - software-properties-common
+      - curl
     state: present    
     update_cache: true
 
