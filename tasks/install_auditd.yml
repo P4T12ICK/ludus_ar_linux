@@ -9,6 +9,12 @@
     update_cache: yes
   become: yes
 
+- name: Check if running in Docker
+  stat:
+    path: /.dockerenv
+  register: dockerenv_check
+  become: no
+
 - name: Reboot the server
   reboot:
     msg: "Rebooting server after installing auditd"
@@ -18,6 +24,7 @@
     post_reboot_delay: 30
     test_command: uptime
   become: yes
+  when: not dockerenv_check.stat.exists | default(false)
 
 - name: Download audit rules
   get_url:
