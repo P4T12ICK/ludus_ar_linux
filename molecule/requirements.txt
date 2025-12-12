@@ -1,0 +1,3 @@
+molecule>=5.0.0
+molecule-plugins[docker]>=2.0.0
+ansible-core>=2.12.0

@@ -1,6 +1,11 @@
 ### Ansible ###
 *.retry
 
+### Molecule ###
+.molecule/
+.cache/
+.pytest_cache/
+
 ### macOS ###
 # General
 .DS_Store

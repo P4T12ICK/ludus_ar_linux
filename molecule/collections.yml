@@ -1,0 +1,4 @@
+---
+collections:
+  - community.docker:>=3.10.2
+  - ansible.posix:>=1.4.0
