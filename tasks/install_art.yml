@@ -14,6 +14,11 @@
   register: art_module_installed
   changed_when: false
 
+- name: Set fact for Atomic Red Team installation needed
+  set_fact:
+    art_needs_installation: "{{ (not (art_atomics_installed.stat.exists | default(false))) or (not (art_module_installed.stat.exists | default(false))) }}"
+  changed_when: false
+
 - name: Install Atomic Red Team
   become: true
   shell: |
@@ -22,8 +27,8 @@
     IEX (IWR https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1); 
     Install-AtomicRedTeam -Force'
   register: output_art
-  when: (not art_atomics_installed.stat.exists | default(false)) or (not art_module_installed.stat.exists | default(false))
-  changed_when: (not art_atomics_installed.stat.exists | default(false)) or (not art_module_installed.stat.exists | default(false))
+  when: art_needs_installation | bool
+  changed_when: art_needs_installation | bool
 
 - name: create directory for default powershell profile
   file: 
