@@ -40,13 +40,57 @@
   when: not splunk_configured.stat.exists | default(false)
   changed_when: false
 
-- name: Stop splunk uf
+- name: Check if SplunkForwarder systemd service exists
+  become: true
+  stat:
+    path: /etc/systemd/system/SplunkForwarder.service
+  register: splunk_systemd_service
+
+- name: Check if SplunkForwarder service is enabled
+  become: true
+  command: systemctl is-enabled SplunkForwarder.service
+  register: splunk_boot_enabled
+  changed_when: false
+  failed_when: false
+  when: splunk_systemd_service.stat.exists
+
+- name: Check if SplunkForwarder service is running (systemd managed)
+  become: true
+  command: systemctl is-active SplunkForwarder.service
+  register: splunk_service_status
+  changed_when: false
+  failed_when: false
+  when: splunk_systemd_service.stat.exists and (splunk_boot_enabled.rc | default(1) != 0)
+
+- name: Stop splunk uf (systemd managed, before enabling boot-start)
+  become: true
+  systemd:
+    name: SplunkForwarder
+    state: stopped
+  when: splunk_systemd_service.stat.exists and (splunk_boot_enabled.rc | default(1) != 0) and splunk_service_status.rc == 0
+
+- name: Check if splunk is running (not systemd managed)
+  become: true
+  shell: sudo -u splunkfwd /opt/splunkforwarder/bin/splunk status
+  register: splunk_status_cmd
+  changed_when: false
+  failed_when: false
+  when: not splunk_systemd_service.stat.exists
+
+- name: Stop splunk uf (not yet systemd managed)
   become: true
   shell: sudo -u splunkfwd /opt/splunkforwarder/bin/splunk stop
+  changed_when: false
+  failed_when: false
+  when: >
+    not splunk_systemd_service.stat.exists and
+    splunk_status_cmd is defined and
+    'running' in (splunk_status_cmd.stdout | default(''))
 
 - name: setup to start at boot
   become: true
   command: "/opt/splunkforwarder/bin/splunk enable boot-start"
+  when: not splunk_systemd_service.stat.exists or (splunk_systemd_service.stat.exists and splunk_boot_enabled.rc != 0)
 
 - name: Start splunk uf
   become: true
