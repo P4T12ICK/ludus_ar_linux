@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: ../../..
+      vars:
+        ludus_ar_linux_splunk_uf_url: https://download.splunk.com/products/universalforwarder/releases/10.0.2/linux/splunkforwarder-10.0.2-e2d18b4767e9-linux-amd64.deb
+        ludus_ar_linux_splunk_password: changeme123!
+        ludus_ar_linux_splunk_ip: "10.2.20.1"
+  ignore_errors: yes

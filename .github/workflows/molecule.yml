@@ -13,7 +13,8 @@ jobs:
     strategy:
       matrix:
         scenario:
-          - default
+          - splunk-9.4
+          - splunk-10
 
     steps:
       - name: Checkout

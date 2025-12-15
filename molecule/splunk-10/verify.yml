@@ -1,0 +1,40 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Verify Splunk Universal Forwarder binary exists
+      ansible.builtin.stat:
+        path: /opt/splunkforwarder/bin/splunk
+      register: result
+      failed_when: not result.stat.exists
+
+    - name: Verify osquery binary exists
+      ansible.builtin.stat:
+        path: /usr/bin/osqueryd
+      register: result
+      failed_when: not result.stat.exists
+
+    - name: Verify osqueryd service exists
+      ansible.builtin.stat:
+        path: /lib/systemd/system/osqueryd.service
+      register: result
+      failed_when: not result.stat.exists
+
+    - name: Verify auditd
+      ansible.builtin.command: which auditd
+      changed_when: false
+      register: result
+      failed_when: result.rc != 0
+
+    - name: Verify Sysmon Linux binary exists
+      ansible.builtin.stat:
+        path: /usr/bin/sysmon
+      register: result
+      failed_when: not result.stat.exists
+
+    - name: Verify ART directory exists
+      ansible.builtin.stat:
+        path: /root/AtomicRedTeam/atomics
+      register: result
+      failed_when: not result.stat.isdir
