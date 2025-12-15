@@ -27,9 +27,9 @@
       register: result
       failed_when: result.rc != 0
 
-    - name: Verify Sysmon Linux exists
+    - name: Verify Sysmon Linux binary exists
       ansible.builtin.stat:
-        path: /opt/sysmon/SysmonLinux
+        path: /usr/bin/sysmon
       register: result
       failed_when: not result.stat.exists
 
