@@ -7,10 +7,10 @@
   register: art_atomics_installed
   changed_when: false
 
-- name: Check if Atomic Red Team module directory exists
+- name: Check if Atomic Red Team module exists
   become: true
   stat:
-    path: /root/AtomicRedTeam/Invoke-AtomicRedTeam
+    path: /root/AtomicRedTeam/invoke-atomicredteam/Invoke-AtomicRedTeam.psd1
   register: art_module_installed
   changed_when: false
 
