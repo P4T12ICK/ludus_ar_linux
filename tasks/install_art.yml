@@ -1,5 +1,11 @@
 ---
 
+- name: Check if Atomic Red Team is already installed
+  become: true
+  stat:
+    path: /opt/AtomicRedTeam
+  register: art_installed
+
 - name: Install Atomic Red Team
   become: true
   shell: |
@@ -8,6 +14,7 @@
     IEX (IWR https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1); 
     Install-AtomicRedTeam -Force'
   register: output_art
+  when: not art_installed.stat.exists | default(false)
 
 - name: create directory for default powershell profile
   file: 

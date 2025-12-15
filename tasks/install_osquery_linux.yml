@@ -21,6 +21,12 @@
   stat: path=/etc/init.d/osqueryd
   register: service_status 
 
+- name: Check if osquery is already installed
+  become: true
+  stat:
+    path: /usr/bin/osqueryd
+  register: osquery_installed
+
 - name: is osquery service exist? if yes stop it!
   become: true
   service: 
@@ -31,10 +37,13 @@
 - name: run osquery_install.sh
   become: true
   command: sh /tmp/osquery_install.sh
+  when: not osquery_installed.stat.exists | default(false)
 
 - name: clean the script
   become: true
-  command: rm /tmp/osquery_install.sh
+  file:
+    path: /tmp/osquery_install.sh
+    state: absent
 
 - name: copy template.osquery.conf
   become: true
@@ -74,7 +83,11 @@
 
 - name: make /var/log/osquery dir accessible to everyone (rwx)
   become: true
-  command: chmod a+rwx /var/log/osquery -R
+  file:
+    path: /var/log/osquery
+    state: directory
+    mode: '0777'
+    recurse: yes
 
 - name: Create folder directory for inputs configuration
   become: true

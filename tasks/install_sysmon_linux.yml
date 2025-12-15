@@ -5,6 +5,7 @@
   become: true
   ansible.builtin.shell: lsb_release -rs
   register: result
+  changed_when: false
 
 - name: add the microsoft repo
   become: true
@@ -37,9 +38,16 @@
     src: "SysMonLinux-CatchAll.xml"
     dest: "/tmp/SysMonLinux-CatchAll.xml"
 
+- name: Check if sysmon is already configured
+  become: true
+  stat:
+    path: /etc/sysmon/sysmon.xml
+  register: sysmon_configured
+
 - name: launch with config
   become: true
   ansible.builtin.shell: sysmon -accepteula -i /tmp/SysMonLinux-CatchAll.xml
+  when: not sysmon_configured.stat.exists | default(false)
 
 - name: install powershell
   become: true

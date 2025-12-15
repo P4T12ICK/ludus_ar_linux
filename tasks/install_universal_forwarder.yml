@@ -28,9 +28,17 @@
     mode: '0644'
     force: yes
 
+- name: Check if splunk is already configured
+  become: true
+  stat:
+    path: /opt/splunkforwarder/etc/.ui_login
+  register: splunk_configured
+
 - name: splunk license acceptance
   become: true
   shell: sudo -u splunkfwd /opt/splunkforwarder/bin/splunk start --accept-license --answer-yes --no-prompt --seed-passwd {{ ludus_ar_linux_splunk_password }}
+  when: not splunk_configured.stat.exists | default(false)
+  changed_when: false
 
 - name: Stop splunk uf
   become: true
