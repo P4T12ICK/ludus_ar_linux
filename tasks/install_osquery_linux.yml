@@ -89,7 +89,6 @@
     path: /var/log/osquery
     state: directory
     mode: '0777'
-    recurse: yes
 
 - name: Create folder directory for inputs configuration
   become: true
