@@ -7,12 +7,12 @@
   register: art_atomics_installed
   changed_when: false
 
-- name: Check if Atomic Red Team module is already installed
+- name: Check if Atomic Red Team module directory exists
   become: true
-  shell: pwsh -Command 'if (Get-Module -ListAvailable -Name invoke-atomicredteam) { exit 0 } else { exit 1 }'
-  register: art_module_check
+  stat:
+    path: /root/AtomicRedTeam/Invoke-AtomicRedTeam
+  register: art_module_installed
   changed_when: false
-  failed_when: false
 
 - name: Install Atomic Red Team
   become: true
@@ -22,8 +22,8 @@
     IEX (IWR https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1); 
     Install-AtomicRedTeam -Force'
   register: output_art
-  when: (not art_atomics_installed.stat.exists | default(false)) or (art_module_check.rc != 0)
-  changed_when: "'already installed' not in (output_art.stdout | default('') + output_art.stderr | default('')) and 'already exists' not in (output_art.stdout | default('') + output_art.stderr | default(''))"
+  when: (not art_atomics_installed.stat.exists | default(false)) or (not art_module_installed.stat.exists | default(false))
+  changed_when: (not art_atomics_installed.stat.exists | default(false)) or (not art_module_installed.stat.exists | default(false))
 
 - name: create directory for default powershell profile
   file: 
