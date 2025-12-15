@@ -43,11 +43,20 @@
   stat:
     path: /etc/sysmon/sysmon.xml
   register: sysmon_configured
+  changed_when: false
+
+- name: Check if sysmon service exists and is active
+  become: true
+  command: systemctl is-active sysmon.service
+  register: sysmon_service_check
+  changed_when: false
+  failed_when: false
 
 - name: launch with config
   become: true
   ansible.builtin.shell: sysmon -accepteula -i /tmp/SysMonLinux-CatchAll.xml
-  when: not sysmon_configured.stat.exists | default(false)
+  when: (not sysmon_configured.stat.exists | default(false)) and (sysmon_service_check.rc != 0 | default(true))
+  changed_when: false
 
 - name: install powershell
   become: true
@@ -64,7 +73,6 @@
     owner: splunkfwd
     group: splunkfwd
     mode: '0755'
-    recurse: yes
   with_items:
     - /opt/splunkforwarder/etc/apps/sysmon_app/local/
 
@@ -76,4 +84,3 @@
     owner: splunkfwd
     group: splunkfwd
     mode: '0644'
-    force: yes

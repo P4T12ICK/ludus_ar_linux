@@ -10,13 +10,6 @@
     state: present    
     update_cache: true
 
-- name: drop the osquery_install.sh script /tmp
-  become: true
-  copy:
-    src: osquery_install.sh
-    dest: /tmp/osquery_install.sh 
-    mode: '0755'
-
 - name: check if osquery service exist
   stat: path=/etc/init.d/osqueryd
   register: service_status 
@@ -34,6 +27,14 @@
     state: stopped
   when: service_status.stat.exists
 
+- name: drop the osquery_install.sh script /tmp
+  become: true
+  copy:
+    src: osquery_install.sh
+    dest: /tmp/osquery_install.sh 
+    mode: '0755'
+  when: not osquery_installed.stat.exists | default(false)
+
 - name: run osquery_install.sh
   become: true
   command: sh /tmp/osquery_install.sh
@@ -44,6 +45,7 @@
   file:
     path: /tmp/osquery_install.sh
     state: absent
+  when: not osquery_installed.stat.exists | default(false)
 
 - name: copy template.osquery.conf
   become: true
@@ -97,7 +99,6 @@
     owner: splunkfwd
     group: splunkfwd
     mode: '0755'
-    recurse: yes
   with_items:
     - /opt/splunkforwarder/etc/apps/osquery_app/local/
 
@@ -109,4 +110,3 @@
     owner: splunkfwd
     group: splunkfwd
     mode: '0644'
-    force: yes

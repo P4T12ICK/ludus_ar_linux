@@ -63,7 +63,6 @@
     owner: splunkfwd
     group: splunkfwd
     mode: '0755'
-    recurse: yes
   with_items:
     - /opt/splunkforwarder/etc/apps/auditd_app/local/
 
@@ -75,4 +74,3 @@
     owner: splunkfwd
     group: splunkfwd
     mode: '0644'
-    force: yes
